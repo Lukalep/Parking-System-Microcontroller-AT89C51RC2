@@ -1,0 +1,161 @@
+C51 COMPILER V8.16   TIMER                                                                 02/09/2026 11:43:27 PAGE 1   
+
+
+C51 COMPILER V8.16, COMPILATION OF MODULE TIMER
+OBJECT MODULE PLACED IN .\timer.obj
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE ..\..\..\..\Projekatispravljen\Projekat(Parking)\timer.c OPTIMIZE(0,SPEED) 
+                    -BROWSE DEBUG OBJECTEXTEND PRINT(.\timer.lst) OBJECT(.\timer.obj)
+
+line level    source
+
+   1          #include <at89c51rc2.h>
+   2          #include "timer.h"
+   3          #include "stdint.h"
+   4          
+   5          #define DEBOUNCE 20
+   6          
+   7          uint16_t brojac250ys = 0;
+   8          uint8_t flag5s = 0;
+   9          volatile uint8_t b1 = 0;
+  10          volatile uint8_t prekid = 0;
+  11          volatile uint16_t brojac = 0;
+  12          
+  13          volatile uint8_t currentStateP0_0 = 0x01;
+  14          volatile uint8_t lastStateP0_0 = 0x01;
+  15          uint8_t repetitions_ulazi = 0x00;
+  16          volatile uint8_t acceptedStateP0_0 = 0x01;
+  17          
+  18          volatile uint8_t currentStateP0_1 = 0x01;
+  19          volatile uint8_t lastStateP0_1 = 0x01;
+  20          uint8_t repetitions_izlazi = 0x00;
+  21          volatile uint8_t acceptedStateP0_1 = 0x01;
+  22          
+  23          volatile uint8_t currentStateP0_2 = 0x01;
+  24          volatile uint8_t lastStateP0_2 = 0x01;
+  25          uint8_t repetitions_gore = 0x00;
+  26          volatile uint8_t acceptedStateP0_2 = 0x01;
+  27          
+  28          volatile uint8_t currentStateP0_3 = 0x01;
+  29          volatile uint8_t lastStateP0_3 = 0x01;
+  30          uint8_t repetitions_dole = 0x00;
+  31          volatile uint8_t acceptedStateP0_3 = 0x01;
+  32          
+  33          void initT1(uint8_t TMOD_sfr, uint8_t enableT1, uint8_t TH1_sfr, uint8_t TL1_sfr)
+  34          {
+  35   1              TMOD = TMOD_sfr;
+  36   1              ET1 = enableT1;
+  37   1              TH1 = TH1_sfr;
+  38   1              TL1 = TL1_sfr;
+  39   1      }
+  40          
+  41          void startT1(void)
+  42          {
+  43   1              TR1 = 1;
+  44   1      }
+  45          
+  46          void stopT1(void)
+  47          {
+  48   1              TR1 = 0;
+  49   1      }
+  50          
+  51          void reloadTH1TL1(uint8_t TH1_sfr, uint8_t TL1_sfr)
+  52          {
+  53   1              TH1 = TH1_sfr;
+  54   1              TL1 = TL1_sfr;
+C51 COMPILER V8.16   TIMER                                                                 02/09/2026 11:43:27 PAGE 2   
+
+  55   1      }
+  56          
+  57          void isr_T1(void) interrupt 3
+  58          {
+  59   1      
+  60   1              currentStateP0_0 = P0_0;
+  61   1              if (currentStateP0_0 == lastStateP0_0)
+  62   1              {
+  63   2                      repetitions_ulazi++;
+  64   2                      if (repetitions_ulazi == DEBOUNCE)
+  65   2                      {
+  66   3                              acceptedStateP0_0 = currentStateP0_0;
+  67   3                      }
+  68   2              }
+  69   1              else
+  70   1              {
+  71   2                      repetitions_ulazi = 0;
+  72   2              }
+  73   1      
+  74   1              currentStateP0_1 = P0_1;
+  75   1              if (currentStateP0_1 == lastStateP0_1)
+  76   1              {
+  77   2                      repetitions_izlazi++;
+  78   2                      if (repetitions_izlazi == DEBOUNCE)
+  79   2                      {
+  80   3                              acceptedStateP0_1 = currentStateP0_1;
+  81   3                      }
+  82   2              }
+  83   1              else
+  84   1              {
+  85   2                      repetitions_izlazi = 0;
+  86   2              }
+  87   1      
+  88   1              currentStateP0_2 = P0_2;
+  89   1              if (currentStateP0_2 == lastStateP0_2)
+  90   1              {
+  91   2                      repetitions_gore++;
+  92   2                      if (repetitions_gore == DEBOUNCE)
+  93   2                      {
+  94   3                              acceptedStateP0_2 = currentStateP0_2;
+  95   3                      }
+  96   2              }
+  97   1              else
+  98   1              {
+  99   2                      repetitions_gore = 0;
+ 100   2              }
+ 101   1      
+ 102   1              currentStateP0_3 = P0_3;
+ 103   1              if (currentStateP0_3 == lastStateP0_3)
+ 104   1              {
+ 105   2                      repetitions_dole++;
+ 106   2                      if (repetitions_dole == DEBOUNCE)
+ 107   2                      {
+ 108   3                              acceptedStateP0_3 = currentStateP0_3;
+ 109   3                      }
+ 110   2              }
+ 111   1              else
+ 112   1              {
+ 113   2                      repetitions_dole = 0;
+ 114   2              }
+ 115   1      
+ 116   1              brojac250ys++;
+C51 COMPILER V8.16   TIMER                                                                 02/09/2026 11:43:27 PAGE 3   
+
+ 117   1                      if (brojac250ys == 20000)
+ 118   1                      { // prosla 1 sekunda
+ 119   2                              brojac250ys = 0;
+ 120   2                              flag5s = 1;
+ 121   2                      }
+ 122   1      
+ 123   1              else if (++brojac == 60000)
+ 124   1              {
+ 125   2                      prekid = 1;
+ 126   2                      brojac = 0;
+ 127   2              }
+ 128   1      
+ 129   1              lastStateP0_0 = currentStateP0_0;
+ 130   1              lastStateP0_1 = currentStateP0_1;
+ 131   1              lastStateP0_2 = currentStateP0_2;
+ 132   1              lastStateP0_3 = currentStateP0_3;
+ 133   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    281    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     29    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

@@ -1,0 +1,219 @@
+C51 COMPILER V8.16   UART                                                                  02/09/2026 11:43:27 PAGE 1   
+
+
+C51 COMPILER V8.16, COMPILATION OF MODULE UART
+OBJECT MODULE PLACED IN .\uart.obj
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE ..\..\..\..\Projekatispravljen\Projekat(Parking)\uart.c OPTIMIZE(0,SPEED) B
+                    -ROWSE DEBUG OBJECTEXTEND PRINT(.\uart.lst) OBJECT(.\uart.obj)
+
+line level    source
+
+   1          #include <at89c51rc2.h>
+   2          #include "uart.h"
+   3          #include "timer.h"
+   4          
+   5          char ringBufferRx[BUFF_LEN];
+   6          uint8_t bufferRxIndex = 0;
+   7          
+   8          char* stringOK = "OK\n";
+   9          char* stringError = "Greska\n"; 
+  10          char* ptrMessageTx;
+  11          uint8_t greska = 0;
+  12          extern volatile uint8_t broj_vozila;
+  13          
+  14          
+  15          
+  16          
+  17          
+  18          
+  19          char* primljenaPoruka;
+  20          
+  21          // ISR i za Transmit i za Recieve
+  22          void isr_UART(void) interrupt 4
+  23          {
+  24   1      // === provera da li se prekid desio zbog slanja bajta sa MCU-a
+  25   1              if(TI)
+  26   1              {
+  27   2                      TI = 0; 
+  28   2      
+  29   2                      ptrMessageTx++;
+  30   2                      if(*ptrMessageTx != '\0')
+  31   2                      {
+  32   3                              SBUF = *ptrMessageTx;
+  33   3                      }
+  34   2              }
+  35   1              
+  36   1      // === proverava da li se prekid desio zbog primanja bajta sa MCU
+  37   1              if(RI)
+  38   1              {
+  39   2                  char receivedByte = SBUF;
+  40   2      
+  41   2                      RI = 0;
+  42   2      
+  43   2                      if(receivedByte == '(') // pocetak poruke
+  44   2                      {
+  45   3                              bufferRxIndex = 0;      
+  46   3                      }
+  47   2                      else if(receivedByte == ')')      // kraj poruke
+  48   2                      {
+  49   3                              // Provera sta se nalazi u kruznom bufferu
+  50   3                              if((ringBufferRx[0] == '(') && (ringBufferRx[1] == 'B') && (ringBufferRx[2] == 'R') && (ringBufferRx[3]
+             - == 'O') && (ringBufferRx[4] == 'J'))
+  51   3                              {if(broj_vozila <= 15)
+  52   4          {
+  53   5              
+C51 COMPILER V8.16   UART                                                                  02/09/2026 11:43:27 PAGE 2   
+
+  54   5      
+  55   5              switch(broj_vozila)
+  56   5              {
+  57   6                                              case 0:
+  58   6                                                      ptrMessageTx = "Zauzeto 0 / 15 mesta\n";   //stringOK;
+  59   6                                                      SBUF = *ptrMessageTx;
+  60   6                                                      break;
+  61   6                  case 1:             
+  62   6                                                      ptrMessageTx = "Zauzeto 1 / 15 mesta\n";   //stringOK;
+  63   6                                                      SBUF = *ptrMessageTx;
+  64   6                                                      break;
+  65   6            case 2:             
+  66   6                                                      ptrMessageTx = "Zauzeto 2 / 15 mesta\n";   //stringOK;
+  67   6                                                      SBUF = *ptrMessageTx;
+  68   6                                                      break;
+  69   6                                                      
+  70   6            case 3:           
+  71   6                                                      ptrMessageTx = "Zauzeto 3 / 15 mesta\n";   //stringOK;
+  72   6                                                      SBUF = *ptrMessageTx;
+  73   6                                                      break;
+  74   6                                                      
+  75   6            case 4:
+  76   6                                              ptrMessageTx = " Zauzeto 4 / 15 mesta\n";   //stringOK;
+  77   6                                                      SBUF = *ptrMessageTx;
+  78   6                                                      break;
+  79   6                                                      
+  80   6            case 5:
+  81   6                                                      ptrMessageTx = "Zauzeto 5 / 15 mesta\n";   //stringOK;
+  82   6                                                      SBUF = *ptrMessageTx;
+  83   6                                                      break;
+  84   6                                                      
+  85   6            case 6:
+  86   6                                                      ptrMessageTx = "Zauzeto 6 / 15 mesta\n";   //stringOK;
+  87   6                                                      SBUF = *ptrMessageTx;
+  88   6                                                      break;
+  89   6                                                      
+  90   6                  case 7:     
+  91   6                                                      ptrMessageTx = "Zauzeto 7 / 15 mesta\n";   //stringOK;
+  92   6                                                      SBUF = *ptrMessageTx;
+  93   6                                                      break;
+  94   6                                      
+  95   6            case 8:
+  96   6                      ptrMessageTx = "Zauzeto 8 / 15 mesta\n";   //stringOK;
+  97   6                                                      SBUF = *ptrMessageTx;
+  98   6                                                      break;
+  99   6                                                      
+ 100   6            case 9:
+ 101   6                  ptrMessageTx = "Zauzeto 9 / 15 mesta\n";   //stringOK;
+ 102   6                                                      SBUF = *ptrMessageTx;
+ 103   6                                                      break;
+ 104   6                                                      
+ 105   6            case 10:
+ 106   6                                                      ptrMessageTx = "Zauzeto 10 / 15 mesta\n";   //stringOK;
+ 107   6                                                      SBUF = *ptrMessageTx;
+ 108   6                                                      break;
+ 109   6                                                      
+ 110   6            case 11:
+ 111   6                  ptrMessageTx = "Zauzeto 11 / 15 mesta\n";   //stringOK;
+ 112   6                                                      SBUF = *ptrMessageTx;
+ 113   6                                                      break;
+ 114   6                                                      
+ 115   6            case 12:
+C51 COMPILER V8.16   UART                                                                  02/09/2026 11:43:27 PAGE 3   
+
+ 116   6                  ptrMessageTx = "Zauzeto 12 / 15 mesta\n";   //stringOK;
+ 117   6                                                      SBUF = *ptrMessageTx;
+ 118   6                                                      break;
+ 119   6                                                      
+ 120   6                  case 13:
+ 121   6                  ptrMessageTx = "Zauzeto 13 / 15 mesta\n";   //stringOK;
+ 122   6                                                      SBUF = *ptrMessageTx;
+ 123   6                                                      break;
+ 124   6                              
+ 125   6            case 14:
+ 126   6                  ptrMessageTx = "Zauzeto 14 / 15 mesta\n";   //stringOK;
+ 127   6                                                      SBUF = *ptrMessageTx;
+ 128   6                                                      break;
+ 129   6                                                      
+ 130   6            case 15:
+ 131   6                                                      ptrMessageTx = "Zauzeto 15 / 15 mesta\n";   //stringOK;
+ 132   6                                                      SBUF = *ptrMessageTx;
+ 133   6                                                      break;
+ 134   6                                                      
+ 135   6              }
+ 136   5          }else {
+ 137   5                                      ptrMessageTx = "GRESKA\n";   //stringOK;
+ 138   5                                      SBUF = *ptrMessageTx;
+ 139   5                                              }
+ 140   4                              }else if((ringBufferRx[0] == '(') && (ringBufferRx[1] == 'S') && (ringBufferRx[2] == 'T') && (ringBuffe
+             -rRx[3] == 'A') && (ringBufferRx[4] == 'N') && (ringBufferRx[5] == 'J')  && (ringBufferRx[6] == 'E'))
+ 141   3                              {if(broj_vozila >= 0){
+ 142   5                                      ptrMessageTx = "RADNO\n";//stringOK;
+ 143   5                                      SBUF = *ptrMessageTx;      
+ 144   5                                      }else{
+ 145   5                                      ptrMessageTx = "GRESKA\n";   //stringOK;
+ 146   5                                      SBUF = *ptrMessageTx;
+ 147   5                                      }       
+ 148   4                              }
+ 149   3                      }
+ 150   2              
+ 151   2                      ringBufferRx[bufferRxIndex] = receivedByte;
+ 152   2                      bufferRxIndex++;
+ 153   2                      if(bufferRxIndex == BUFF_LEN - 1)
+ 154   2                      {
+ 155   3                              bufferRxIndex = 0;
+ 156   3                      }
+ 157   2              }
+ 158   1      }
+ 159          
+ 160          
+ 161          void initUART(uint8_t SCON_sfr, uint8_t PCON_sfr, uint8_t BDRCON_sfr, uint8_t BRL_sfr)
+ 162          {
+ 163   1               /* SCON = SCON_sfr;
+ 164   1                PCON = PCON_sfr;
+ 165   1                BDRCON = BDRCON_sfr;
+ 166   1                BRL = BRL_sfr;  */
+ 167   1                PCON &= 0x3F;
+ 168   1                PCON |= (PCON_sfr & 0xC0);
+ 169   1      
+ 170   1                SCON &= 0x07;
+ 171   1                SCON |= (SCON_sfr & 0xF8);
+ 172   1      
+ 173   1                BDRCON &= 0xE0;
+ 174   1                BDRCON |= (BDRCON_sfr & 0x1F);
+ 175   1      
+ 176   1                BRL = BRL_sfr; 
+C51 COMPILER V8.16   UART                                                                  02/09/2026 11:43:27 PAGE 4   
+
+ 177   1      }
+ 178          
+ 179          void enable_UART_Interrupt(void)
+ 180          {
+ 181   1              ES = 1;
+ 182   1      }
+ 183          
+ 184          void diable_UART_Interrupt(void)
+ 185          {
+ 186   1              ES = 0;
+ 187   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    848    ----
+   CONSTANT SIZE    =    386    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =     39    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

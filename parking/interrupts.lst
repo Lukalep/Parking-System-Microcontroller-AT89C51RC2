@@ -1,0 +1,36 @@
+C51 COMPILER V8.16   INTERRUPTS                                                            02/09/2026 11:43:27 PAGE 1   
+
+
+C51 COMPILER V8.16, COMPILATION OF MODULE INTERRUPTS
+OBJECT MODULE PLACED IN .\interrupts.obj
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE ..\..\..\..\Projekatispravljen\Projekat(Parking)\interrupts.c OPTIMIZE(0,SP
+                    -EED) BROWSE DEBUG OBJECTEXTEND PRINT(.\interrupts.lst) OBJECT(.\interrupts.obj)
+
+line level    source
+
+   1          #include "interrupts.h"
+   2          #include <at89c51rc2.h>
+   3          
+   4          void enableInterrupts(void)
+   5          {
+   6   1              EA = 0x01;
+   7   1      }
+   8          
+   9          void disableInterrupts(void)
+  10          {
+  11   1              EA = 0x00;      
+  12   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =      6    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

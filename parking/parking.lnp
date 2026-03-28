@@ -1,0 +1,11 @@
+".\._timer.obj",
+".\display.obj",
+".\GPIO.obj",
+".\interrupts.obj",
+".\main.obj",
+".\programi.obj",
+".\rampa.obj",
+".\timer.obj",
+".\uart.obj" 
+TO "parking" 
+RAMSIZE(256) 

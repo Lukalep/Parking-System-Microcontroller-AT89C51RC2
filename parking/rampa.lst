@@ -1,0 +1,27 @@
+C51 COMPILER V8.16   RAMPA                                                                 02/09/2026 11:43:27 PAGE 1   
+
+
+C51 COMPILER V8.16, COMPILATION OF MODULE RAMPA
+OBJECT MODULE PLACED IN .\rampa.obj
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE ..\..\..\..\Projekatispravljen\Projekat(Parking)\rampa.c OPTIMIZE(0,SPEED) 
+                    -BROWSE DEBUG OBJECTEXTEND PRINT(.\rampa.lst) OBJECT(.\rampa.obj)
+
+line level    source
+
+   1          #include "rampa.h"
+   2          #include <at89c51rc2.h>
+   3          
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =   ----    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =   ----    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)

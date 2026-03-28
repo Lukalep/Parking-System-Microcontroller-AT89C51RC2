@@ -1,0 +1,254 @@
+C51 COMPILER V8.16   MAIN                                                                  02/09/2026 11:43:27 PAGE 1   
+
+
+C51 COMPILER V8.16, COMPILATION OF MODULE MAIN
+OBJECT MODULE PLACED IN .\main.obj
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE ..\..\..\..\Projekatispravljen\Projekat(Parking)\main.c OPTIMIZE(0,SPEED) B
+                    -ROWSE DEBUG OBJECTEXTEND PRINT(.\main.lst) OBJECT(.\main.obj)
+
+line level    source
+
+   1          #include "stdint.h"
+   2          #include "timer.h"
+   3          #include "interrupts.h"
+   4          #include "gpio.h"
+   5          #include "programi.h"
+   6          #include "uart.h"
+   7          #include "display.h"
+   8          #define POPUNJENOST 15
+   9          
+  10          typedef enum
+  11          {
+  12                  SPUSTENA,
+  13                  PODIZANJE,
+  14                  PODIGNUTA,
+  15                  SPUSTANJE
+  16          } stanje_t;
+  17          
+  18          volatile uint8_t broj_vozila = 0;
+  19          volatile uint8_t broj_vozila_pom = 0;
+  20          volatile uint8_t upis_dozvola = 0;
+  21          volatile uint8_t ispis_dozvola = 0;
+  22          volatile uint8_t upis_izvrsen = 0;
+  23          volatile uint8_t ispis_izvrsen = 0;
+  24          
+  25          void upisi()
+  26          {
+  27   1              broj_vozila_pom = broj_vozila;
+  28   1              broj_vozila++;
+  29   1      }
+  30          
+  31          void ispisi()
+  32          {
+  33   1              broj_vozila_pom = broj_vozila;
+  34   1              broj_vozila--;
+  35   1      }
+  36          
+  37          void main(void)
+  38          {
+  39   1              volatile stanje_t stanje = SPUSTENA;
+  40   1              initGPIO();
+  41   1              enableInterrupts();
+  42   1              initUART(0x50, 0x80, 0x1C, 253);
+  43   1              enable_UART_Interrupt();
+  44   1      
+  45   1              initT1(0x20, 0x01, 0x19, 0x19);
+  46   1              startT1();
+  47   1              initDisplay();
+  48   1      
+  49   1              while (1)
+  50   1              {
+  51   2                      if (broj_vozila != broj_vozila_pom)
+  52   2                      {
+  53   3                              clearDisplay();
+  54   3      
+C51 COMPILER V8.16   MAIN                                                                  02/09/2026 11:43:27 PAGE 2   
+
+  55   3                              if (broj_vozila < 15 && broj_vozila >= 0)
+  56   3                              {
+  57   4                                      writeLine("ZAUZETO");
+  58   4                                      newLine();
+  59   4      
+  60   4                                      switch (broj_vozila)
+  61   4                                      {
+  62   5                                      case 0:
+  63   5                                              writeLine("0 / 15");
+  64   5                                              break;
+  65   5      
+  66   5                                      case 1:
+  67   5                                              writeLine("1 / 15");
+  68   5                                              break;
+  69   5      
+  70   5                                      case 2:
+  71   5                                              writeLine("2 / 15");
+  72   5                                              break;
+  73   5      
+  74   5                                      case 3:
+  75   5                                              writeLine("3 / 15");
+  76   5                                              break;
+  77   5      
+  78   5                                      case 4:
+  79   5                                              writeLine("4 / 15");
+  80   5                                              break;
+  81   5      
+  82   5                                      case 5:
+  83   5                                              writeLine("5 / 15");
+  84   5                                              break;
+  85   5      
+  86   5                                      case 6:
+  87   5                                              writeLine("6 / 15");
+  88   5                                              break;
+  89   5      
+  90   5                                      case 7:
+  91   5                                              writeLine("7 / 15");
+  92   5                                              break;
+  93   5      
+  94   5                                      case 8:
+  95   5                                              writeLine("8 / 15");
+  96   5                                              break;
+  97   5      
+  98   5                                      case 9:
+  99   5                                              writeLine("9 / 15");
+ 100   5                                              break;
+ 101   5      
+ 102   5                                      case 10:
+ 103   5                                              writeLine("10 / 15");
+ 104   5                                              break;
+ 105   5      
+ 106   5                                      case 11:
+ 107   5                                              writeLine("12 / 15");
+ 108   5                                              break;
+ 109   5      
+ 110   5                                      case 12:
+ 111   5                                              writeLine("12 / 15");
+ 112   5                                              break;
+ 113   5      
+ 114   5                                      case 13:
+ 115   5                                              writeLine("13 / 15");
+ 116   5                                              break;
+C51 COMPILER V8.16   MAIN                                                                  02/09/2026 11:43:27 PAGE 3   
+
+ 117   5      
+ 118   5                                      case 14:
+ 119   5                                              writeLine("14 / 15");
+ 120   5                                              break;
+ 121   5                                      }
+ 122   4                              }
+ 123   3                              /*else if (broj_vozila < 0)
+ 124   3                              {
+ 125   3                                      writeLine("GRESKA");
+ 126   3                                      newLine();
+ 127   3                                      writeLine(" ");
+ 128   3                              }*/
+ 129   3                              else if (broj_vozila == 15)
+ 130   3                              {
+ 131   4                                      writeLine("CEKATI");
+ 132   4                                      newLine();
+ 133   4                                      writeLine("15 / 15");
+ 134   4                              }
+ 135   3      
+ 136   3                              broj_vozila_pom = broj_vozila;
+ 137   3                      }
+ 138   2      
+ 139   2                      switch (stanje)
+ 140   2                      {
+ 141   3                      case SPUSTENA:
+ 142   3                              program4();
+ 143   3                              if ((P0_0 == 0 || P0_1 == 0) && (P0_0 != P0_1))
+ 144   3                              {
+ 145   4                                      if (P0_0 == 0)
+ 146   4                                      {
+ 147   5                                              if (broj_vozila < 15)
+ 148   5                                              {
+ 149   6                                                      stanje = PODIZANJE;
+ 150   6                                                      program1();
+ 151   6                                                      upisi();
+ 152   6                                              }
+ 153   5                                              else
+ 154   5                                              {
+ 155   6                                                      stanje = SPUSTENA;
+ 156   6                                                      program4();
+ 157   6                                              }
+ 158   5                                      }
+ 159   4                                      else if (P0_1 == 0)
+ 160   4                                      {
+ 161   5                                              if (broj_vozila > 0)
+ 162   5                                              {
+ 163   6                                                      stanje = PODIZANJE;
+ 164   6                                                      program1();
+ 165   6                                                      ispisi();
+ 166   6                                              }
+ 167   5                                              else
+ 168   5                                              {
+ 169   6                                                      stanje = SPUSTENA;
+ 170   6                                                      program4();
+ 171   6                                              }
+ 172   5                                      }
+ 173   4                              }
+ 174   3                              break;
+ 175   3      
+ 176   3                      case PODIZANJE:
+ 177   3                              if (P0_0 == 0 && P0_1 == 0)
+ 178   3                              {
+C51 COMPILER V8.16   MAIN                                                                  02/09/2026 11:43:27 PAGE 4   
+
+ 179   4      
+ 180   4                                      stanje = SPUSTANJE;
+ 181   4                                      program2();
+*** WARNING C206 IN LINE 181 OF ..\..\..\..\PROJEKATISPRAVLJEN\PROJEKAT(PARKING)\MAIN.C: 'program2': missing function-pr
+             -ototype
+ 182   4                                      broj_vozila = broj_vozila_pom;
+ 183   4                              }
+ 184   3                              else if (P0_2 == 0)
+ 185   3                              {
+ 186   4                                      stanje = PODIGNUTA;
+ 187   4                                      flag5s = 0;
+ 188   4                                      brojac250ys = 0;
+ 189   4                                      program3();
+ 190   4                              }
+ 191   3                              break;
+ 192   3      
+ 193   3                      case PODIGNUTA:
+ 194   3                              if (flag5s)
+ 195   3                              {
+ 196   4                                      flag5s = 0;
+ 197   4                                      stanje = SPUSTANJE;
+ 198   4                                      program2();
+ 199   4                              }
+ 200   3                              break;
+ 201   3      
+ 202   3                      case SPUSTANJE:
+ 203   3                              if (P0_3 == 0)
+ 204   3                              {
+ 205   4                                      if (P0_0 == 0 && P0_1 == 0)
+ 206   4                                      {
+ 207   5                                              stanje = SPUSTENA;
+ 208   5                                              program4();
+ 209   5                                      }
+ 210   4                                      else if ((P0_0 == 0 || P0_1 == 0) && (P0_0 != P0_1))
+ 211   4                                      {
+ 212   5                                              stanje = PODIZANJE;
+ 213   5                                              program1();
+ 214   5                                      }
+ 215   4                                      else
+ 216   4                                              stanje = SPUSTENA;
+ 217   4                                      program4();
+ 218   4                              }
+ 219   3                              break;
+ 220   3                      }
+ 221   2              }
+ 222   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =    579    ----
+   CONSTANT SIZE    =    125    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      7    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  1 WARNING(S),  0 ERROR(S)

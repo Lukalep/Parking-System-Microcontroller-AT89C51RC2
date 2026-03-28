@@ -1,0 +1,56 @@
+C51 COMPILER V8.16   PROGRAMI                                                              02/09/2026 11:43:27 PAGE 1   
+
+
+C51 COMPILER V8.16, COMPILATION OF MODULE PROGRAMI
+OBJECT MODULE PLACED IN .\programi.obj
+COMPILER INVOKED BY: C:\Keil\C51\BIN\C51.EXE ..\..\..\..\Projekatispravljen\Projekat(Parking)\programi.c OPTIMIZE(0,SPEE
+                    -D) BROWSE DEBUG OBJECTEXTEND PRINT(.\programi.lst) OBJECT(.\programi.obj)
+
+line level    source
+
+   1          #include "programi.h"
+   2          #include <at89c51rc2.h>
+   3          
+   4          
+   5          uint8_t maskaP1 = 0x01;  // maska za prvi program
+   6          
+   7          uint8_t maskaP2 = 0x02;  // maska za drugi program
+   8          
+   9          uint8_t maskaP3 = 0x40;  // maska za treci program
+  10          
+  11          uint8_t maskaP4 = 0x80;
+  12          
+  13          void program1()
+  14          {
+  15   1              P2 = maskaP1;
+  16   1      }
+  17          
+  18          void program2()
+  19          {
+  20   1                      P2 = maskaP2;
+  21   1      }
+  22          
+  23          void program3()
+  24          {
+  25   1              P2 = maskaP3;
+  26   1      }
+  27          
+  28          void program4()
+  29          {
+  30   1                      P2 = maskaP4;
+  31   1                      
+  32   1      }
+
+
+MODULE INFORMATION:   STATIC OVERLAYABLE
+   CODE SIZE        =     16    ----
+   CONSTANT SIZE    =   ----    ----
+   XDATA SIZE       =   ----    ----
+   PDATA SIZE       =   ----    ----
+   DATA SIZE        =      4    ----
+   IDATA SIZE       =   ----    ----
+   BIT SIZE         =   ----    ----
+END OF MODULE INFORMATION.
+
+
+C51 COMPILATION COMPLETE.  0 WARNING(S),  0 ERROR(S)
